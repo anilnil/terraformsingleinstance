@@ -5,22 +5,12 @@ provider "aws" {
     region = "${var.aws_region}"
 }
 
-terraform {
-  required_version = "<= 0.14" #Forcing which version of Terraform needs to be used
-  required_providers {
-    aws = {
-      version = "<= 3.0.0" #Forcing which version of plugin needs to be used.
-      source = "hashicorp/aws"
-    }
-  }
-}
-
 resource "aws_vpc" "default" {
     cidr_block = "${var.vpc_cidr}"
     enable_dns_hostnames = true
     tags = {
         Name = "${var.vpc_name}"
-	Owner = "Sreeharsha Veerapalli"
+	Owner = "Anil"
 	environment = "${var.environment}"
     }
 }
@@ -88,25 +78,20 @@ resource "aws_security_group" "allow_all" {
   vpc_id      = "${aws_vpc.default.id}"
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
     from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
+    to_port         = 65535
+    protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
     }
 }
 
-# data "aws_ami" "my_ami" {
-#      most_recent      = true
-#      #name_regex       = "^mavrick"
-#      owners           = ["721834156908"]
-# }
 
 
 # resource "aws_instance" "web-1" {
@@ -122,25 +107,8 @@ resource "aws_security_group" "allow_all" {
 #     tags = {
 #         Name = "Server-1"
 #         Env = "Prod"
-#         Owner = "Sree"
+#         Owner = "Anil"
 # 	CostCenter = "ABCD"
 #     }
 # }
 
-##output "ami_id" {
-#  value = "${data.aws_ami.my_ami.id}"
-#}
-#!/bin/bash
-# echo "Listing the files in the repo."
-# ls -al
-# echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++"
-# echo "Running Packer Now...!!"
-# packer build -var=aws_access_key=AAAAAAAAAAAAAAAAAA -var=aws_secret_key=BBBBBBBBBBBBB packer.json
-#packer validate --var-file creds.json packer.json
-#packer build --var-file creds.json packer.json
-#packer.exe build --var-file creds.json -var=aws_access_key=AAAAAAAAAAAAAAAAAA -var=aws_secret_key=BBBBBBBBBBBBB packer.json
-# echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++"
-# echo "Running Terraform Now...!!"
-# terraform init
-# terraform apply --var-file terraform.tfvars -var="aws_access_key=AAAAAAAAAAAAAAAAAA" -var="aws_secret_key=BBBBBBBBBBBBB" --auto-approve
-#https://discuss.devopscube.com/t/how-to-get-the-ami-id-after-a-packer-build/36
